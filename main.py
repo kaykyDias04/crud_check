@@ -6,9 +6,23 @@ import json_functions
 import menu_functions
 import crud_functions
 
-denuncias = [{}]
+denuncias = [{
+    "categoria": "",
+    "data": "",
+    "local": "",
+    "descricao": "",
+    "numero_de_protocolo": "",
+    "progresso":""
+}]
 
-usuarios_adm = [{}]
+usuarios_adm = [{
+    "username":"",
+    "nome": "",
+    "idade": "",
+    "email": "",
+    "telefone": "",
+    "senha": ""
+}]
 
 categorias_denuncias = [{
     "categorias": ["Roubo", "Furto", "Assédio",
@@ -22,15 +36,6 @@ categoria_arquivo: str = "categorias.json"
 
 username_padrao = "admin"
 senha_padrao = 123456
-
-with open(denuncia_arquivo, 'w', encoding='utf-8') as file:
-    json.dump(denuncias, file, ensure_ascii=False, indent=4)
-
-with open(usuario_arquivo,'w', encoding='utf-8') as file:
-        json.dump(usuarios_adm, file, ensure_ascii=False, indent=4)
-
-with open(categoria_arquivo, 'w', encoding='utf-8') as file:
-        json.dump(categorias_denuncias, file, ensure_ascii=False, indent=4)
 
 def gerar_protocolo():
     protocolo = random.randint(10000, 99999)
@@ -97,13 +102,13 @@ def menu_adm():
             case 1:
                 crud_functions.cadastro_adm()
             case 2:
-                print("exemplo")
+                crud_functions.listar_adm()
             case 3:
-                print("exemplo")
+                crud_functions.alterar_adm()
             case 4:
-                print("exemplo")
+                crud_functions.remover_adm()
             case 5:
-                print("exemplo")
+                crud_functions.listar_denuncias()
             case 6:
                 print("exemplo")
             case 7:
@@ -112,8 +117,11 @@ def menu_adm():
                 print("exemplo")
             case 9:
                 print("Voce esta saindo da area do administrador!")
-                time.sleep(1.5)
+                time.sleep(1)
                 break
+            case _ :
+                print("Digite uma opção válida!")
+
 
 def menu_denuncia():
     while True:
