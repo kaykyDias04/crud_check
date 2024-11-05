@@ -26,6 +26,7 @@ def cadastro_adm():
             "telefone": telefone,
             "senha": senha
         }
+    print("Administrador cadastrado com sucesso!")
     adicionar_usuario(novo_adm)
 
 def listar_adm():
@@ -130,7 +131,6 @@ def criar_denuncia():
 
     adicionar_denuncia(nova_denuncia)
 
-
 def listar_denuncias():
     denuncias = json_functions.carregar_denuncias()
     if denuncias:
@@ -221,12 +221,21 @@ def listar_categorias():
         print("Nenhuma categoria encontrada!")
 
 def editar_categoria():
+    categorias_denuncias = json_functions.carregar_categorias()
     listar_categorias()
-    resposta = int(input("\n Escolha o número da categoria a ser editada: "))
-    categoria_modificada = input("\nDigite a nova categorias: ")
-    categorias_denuncias['categorias'][resposta - 1] = categoria_modificada
-    print("Categoria editada com sucesso!")
-    json_functions.salvar_categorias(categorias_denuncias)
+    try:
+        resposta = int(input("\n Escolha o número da categoria a ser editada: "))
+        categorias_lista = categorias_denuncias.get("categorias", [])
+
+        if 0 < resposta <= len(categorias_lista):
+            categoria_modificada = input("\nDigite a nova categorias: ")
+            categorias_denuncias['categorias'][resposta - 1] = categoria_modificada
+            print("Categoria editada com sucesso!")
+            json_functions.salvar_categorias(categorias_denuncias)
+        else:
+            print("Escolha um número de categoria válido")
+    except ValueError:
+        print("Entrada inválida. Por favor insira um número.")
 
 def remover_categoria():
     listar_categorias()

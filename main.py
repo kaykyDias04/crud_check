@@ -18,12 +18,6 @@ categorias_denuncias = {
                    "Vandalismo", "Violência Doméstica", "Discriminação"]
 }
 
-denuncia_arquivo: str = "denuncias.json"
-usuario_arquivo: str = "usuarios.json"
-categoria_arquivo: str = "categorias.json"
-
-
-
 def gerar_protocolo():
     protocolo = random.randint(100000, 999999)
     return protocolo
