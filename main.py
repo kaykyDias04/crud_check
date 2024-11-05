@@ -11,7 +11,7 @@ denuncias = [{
     "data": "",
     "local": "",
     "descricao": "",
-    "numero_de_protocolo": "",
+    "protocolo": "",
     "progresso":""
 }]
 
@@ -34,14 +34,31 @@ denuncia_arquivo: str = "denuncias.json"
 usuario_arquivo: str = "usuarios.json"
 categoria_arquivo: str = "categorias.json"
 
-username_padrao = "admin"
-senha_padrao = 123456
+
 
 def gerar_protocolo():
-    protocolo = random.randint(10000, 99999)
+    protocolo = random.randint(100000, 999999)
     return protocolo
 
 numero_protocolo = gerar_protocolo()
+
+def autenticacao_adm():
+    usuarios_adm = json_functions.carregar_usuarios_adm()
+    nome_usuario = input("\nInforme seu nome de usuário: ")
+    senha = input("Informe sua senha: ")
+
+    username_padrao = "admin"
+    senha_padrao = "123456"
+
+    autenticado = any(
+        nome_usuario == user.get("username") and senha == user.get("senha")
+        for user in usuarios_adm) or nome_usuario == username_padrao and senha == senha_padrao
+
+    if autenticado:
+        print("\n Autenticação realizada, bem vindo!")
+        menu_adm()
+    else:
+        print("\n Infelizmente você não tem acesso! ")
 
 
 def menu_inicial():
@@ -62,18 +79,7 @@ def menu_principal():
         escolha = int(input("\nEscolha um para continuar: "))
         match escolha:
             case 1:
-                print("\nBem vindo a area ADM!")
-                try:
-                    nome_usuario = input("\nInforme seu nome de usuário: ")
-                    senha=int(input("Insira sua senha: "))
-                    if (nome_usuario in usuarios_adm and senha == usuarios_adm[nome_usuario]) or \
-                       (nome_usuario == username_padrao and senha == senha_padrao):
-                        print("\nAutenticação bem sucedida! ")
-                        menu_adm()
-                    else:
-                        print("\nInfelizmente voce não tem o acesso!")
-                except ValueError:
-                    print("Entrada inválida, insira um número para a senha,")
+                autenticacao_adm()
             case 2:
                 menu_denuncia()
             case 3:
@@ -83,6 +89,21 @@ def menu_principal():
             case _:
                 print("Escolha uma opção válida!")
                 time.sleep(1)
+
+def menu_denuncia():
+    while True:
+        print("="*20, "Denúncia Anônima", "="*20)
+        print("[1] Realizar Denúncia Anônima")
+        print("[2] Busca por Denúncia")
+        print("[3] Sair")
+        resposta= int(input("Escolha um para continuar:"))
+        match resposta:
+            case 1:
+                crud_functions.criar_denuncia()
+            case 2:
+                print("exemplo")
+            case 3:
+                break
 
 def menu_adm():
     while True:
@@ -110,11 +131,11 @@ def menu_adm():
             case 5:
                 crud_functions.listar_denuncias()
             case 6:
-                print("exemplo")
+                crud_functions.atualizar_progresso()
             case 7:
-                print("exemplo")
+                crud_functions.remover_denuncia()
             case 8:
-                print("exemplo")
+                menu_categorias()
             case 9:
                 print("Voce esta saindo da area do administrador!")
                 time.sleep(1)
@@ -122,21 +143,28 @@ def menu_adm():
             case _ :
                 print("Digite uma opção válida!")
 
-
-def menu_denuncia():
+def menu_categorias():
     while True:
-        print("="*20, "Denúncia Anônima", "="*20)
-        print("[1] Realizar Denúncia Anônima")
-        print("[2] Busca por Denúncia")
-        print("[3] Sair")
-        resposta= int(input("Escolha um para continuar:"))
+        print("=" * 20, "Menu de Edição de Categorias", "=" * 20)
+        print("[1] Criar Nova Categoria")
+        print("[2] Listar Categorias")
+        print("[3] Editar Categoria Existente")
+        print("[4] Remover Categoria")
+        print("[5] Sair")
+        resposta = int(input("Escolha um para continuar:"))
         match resposta:
             case 1:
                 print("exemplo")
             case 2:
                 print("exemplo")
             case 3:
+                print("exemplo")
+            case 4:
+                print("exemplo")
+            case 5:
                 break
+            case _:
+                print("Informe um valor válido! ")
 
 def main():
     menu_inicial()

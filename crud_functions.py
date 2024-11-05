@@ -1,4 +1,5 @@
 import email
+import main
 import json
 import menu_functions
 import json_functions
@@ -32,7 +33,14 @@ def listar_adm():
     if usuarios_adm:
         print("\nADMINISTRADORES CADASTRADOS:")
         for i, user in enumerate(usuarios_adm[1:], start=1):
-            print(f"{i}: {user}")
+            print("-" * 40)
+            print(f"  Usuário {i}:")
+            print(f"  Nome de Usuário: {user.get('username')}")
+            print(f"  Nome: {user.get('nome')}")
+            print(f"  Idade: {user.get('idade')}")
+            print(f"  Email: {user.get('email')}")
+            print(f"  Telefone: {user.get('telefone')}")
+            print("-" * 40)
     else:
         print("Nenhum usuário cadastrado!")
 
@@ -77,11 +85,135 @@ def remover_adm():
         print("Nenhum usuario encontrado")
     json_functions.salvar_usuarios_adm(usuarios_adm)
 
+def adicionar_denuncia(nova_denuncia):
+    denuncias = json_functions.carregar_denuncias()
+    denuncias.append(nova_denuncia)
+    json_functions.salvar_denuncias(denuncias)
+
+def criar_denuncia():
+    json_functions.carregar_denuncias()
+    resposta = int(input("Informe a categoria do ocorrido: "))
+    while True:
+        match resposta:
+            case 1:
+                categoria = "Roubo"
+                break
+            case 2:
+                categoria = "Furto"
+                break
+            case 3:
+                categoria = "Assédio"
+                break
+            case 4:
+                categoria = "Agressão Física"
+                break
+            case 5:
+                categoria = "Fraude"
+                break
+            case 6:
+                categoria = "Tráfico de Drogas"
+                break
+            case 7:
+                categoria = "Vandalismo"
+                break
+            case 8:
+                categoria = "Violência Doméstica"
+                break
+            case 9:
+                categoria = "Discriminação"
+                break
+            case _:
+                print("Escolha uma opção válida")
+
+    data = input("Informe a data do ocorrido (DD//MM//AA): ")
+    local = input("Informe o local do ocorrido: ")
+    descricao = input("Dê uma breve descrição do ocorrido: ")
+    protocolo = main.numero_protocolo
+    print(f"Obrigado pelas informações, seu protocolo é: {protocolo} ")
+    progresso = "Em Processamento"
+
+    nova_denuncia = {
+        "categoria": categoria,
+        "data": data,
+        "local": local,
+        "descricao": descricao,
+        "protocolo": protocolo,
+        "progresso": progresso
+    }
+    adicionar_denuncia(nova_denuncia)
+
 def listar_denuncias():
     denuncias = json_functions.carregar_denuncias()
     if denuncias:
         print("\nLISTA DE DENÚNCIAS:")
         for i, denuncia in enumerate(denuncias[1:], start=1):
-            print(f"{i}: {denuncia}")
+            print("-" * 40)
+            print(f"Denúncia {i}:")
+            print(f"  Categoria: {denuncia.get('categoria', 'Não informado')}")
+            print(f"  Data: {denuncia.get('data', 'Não informado')}")
+            print(f"  Local: {denuncia.get('local', 'Não informado')}")
+            print(f"  Descrição: {denuncia.get('descricao', 'Não informado')}")
+            print(f"  Protocolo: {denuncia.get('protocolo')}")
+            print(f"  Progresso: {denuncia.get('progresso')}")
+            print("-" * 40)
     else:
         print("Nenhuma denúncia encontrada!")
+
+def atualizar_progresso():
+    denuncias = json_functions.carregar_denuncias()
+    listar_denuncias()
+    resposta = int(input("\nQual denúncia você quer alterar o progresso? "))
+    try:
+        if 0 < resposta < len(denuncias):
+                print("Escolha a nova categoria: ")
+                print("[1] Em Andamento")
+                print("[2] Caso Encerrado ")
+                opcao = int(input("\n"))
+
+                while True:
+                    match opcao:
+                        case 1:
+                            novo_progresso = "Em Andamento"
+                            break
+                        case 2:
+                            novo_progresso = "Caso Encerrado"
+                            break
+                        case _:
+                            print("Escolha um número válido! ")
+
+                denuncias[resposta]["progresso"] = novo_progresso
+                json_functions.salvar_denuncias(denuncias)
+                print("Progresso atualizado com sucesso!")
+        else:
+            print("Opção inválida! ")
+
+    except ValueError:
+        print("Entrada inválida! Por favor, insira um número.")
+
+def remover_denuncia():
+    listar_denuncias()
+    denuncias = json_functions.carregar_denuncias()
+    resposta = int(input("\nQual denúncia você quer remover? "))
+    if 0 < resposta <= len(denuncias):
+        denuncias.pop(resposta)
+        print("Denúncia removido com sucesso! ")
+    else:
+        print("Digite um valor válido! ")
+    json_functions.salvar_denuncias(denuncias)
+
+def listar_categorias():
+    categorias_denuncias = json_functions.carregar_categorias()
+    if categorias_denuncias:
+        print("\nLISTA DE CATEGORIAS DE DENÚNCIAS:")
+        for i, denuncia in enumerate(denuncias, start=1):
+            print("-" * 40)
+            print(categorias_denuncias)
+            print("-" * 40)
+    else:
+        print("Nenhuma denúncia encontrada!")
+
+
+
+
+
+

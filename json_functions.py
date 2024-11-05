@@ -70,8 +70,3 @@ def carregar_categorias():
                 print("Erro ao decodificar o JSON. O arquivo pode estar corrompido.")
                 return []
     return []
-
-def carregar_all():
-    carregar_categorias()
-    carregar_denuncias()
-    carregar_usuarios_adm()

@@ -1,14 +1,6 @@
-import json
-import os
+import main
+from main import numero_protocolo
 
-# Função para carregar denúncias existentes do arquivo JSON
+main.numero_protocolo
 
-
-# Função para salvar as denúncias no arquivo JSON
-
-
-# Função para adicionar uma nova denúncia
-
-
-
-
+print(numero_protocolo)
