@@ -1,6 +1,4 @@
 import json
-import crud_functions
-import menu_functions
 import os
 
 denuncias = [{
@@ -26,7 +24,6 @@ categorias_denuncias = {
                    "Vandalismo", "Violência Doméstica", "Discriminação"]
 }
 
-
 def salvar_denuncias(denuncias):
     with open("denuncias.json", 'w', encoding='utf-8') as file:
         json.dump(denuncias, file, ensure_ascii=False, indent=4)
@@ -41,7 +38,6 @@ def carregar_denuncias():
                 return []
     return []
 
-
 def salvar_usuarios_adm(usuarios_adm):
     with open("usuarios.json", 'w', encoding='utf-8') as file:
         json.dump(usuarios_adm, file, ensure_ascii=False, indent=4)
@@ -55,7 +51,6 @@ def carregar_usuarios_adm():
                 print("Erro ao decodificar o JSON. O arquivo pode estar corrompido.")
                 return []
     return []
-
 
 def salvar_categorias(categorias_denuncias):
     with open("categorias.json", 'w', encoding='utf-8') as file:

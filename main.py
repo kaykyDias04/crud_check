@@ -1,9 +1,7 @@
-import json
 import os
 import time
 import random
 import json_functions
-import menu_functions
 import crud_functions
 
 denuncias = [{
@@ -21,7 +19,6 @@ categorias_denuncias = {
 def gerar_protocolo():
     protocolo = random.randint(100000, 999999)
     return protocolo
-
 numero_protocolo = gerar_protocolo()
 
 def autenticacao_adm():
