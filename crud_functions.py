@@ -91,45 +91,32 @@ def adicionar_denuncia(nova_denuncia):
     json_functions.salvar_denuncias(denuncias)
 
 def criar_denuncia():
-    json_functions.carregar_denuncias()
-    resposta = int(input("Informe a categoria do ocorrido: "))
-    while True:
-        match resposta:
-            case 1:
-                categoria = "Roubo"
-                break
-            case 2:
-                categoria = "Furto"
-                break
-            case 3:
-                categoria = "Assédio"
-                break
-            case 4:
-                categoria = "Agressão Física"
-                break
-            case 5:
-                categoria = "Fraude"
-                break
-            case 6:
-                categoria = "Tráfico de Drogas"
-                break
-            case 7:
-                categoria = "Vandalismo"
-                break
-            case 8:
-                categoria = "Violência Doméstica"
-                break
-            case 9:
-                categoria = "Discriminação"
-                break
-            case _:
-                print("Escolha uma opção válida")
+    categorias_denuncias = json_functions.carregar_categorias()
 
-    data = input("Informe a data do ocorrido (DD//MM//AA): ")
+    print("Informe a categoria do ocorrido: ")
+    listar_categorias()
+
+    if not categorias_denuncias.get("categorias"):
+        print("Nenhuma categoria disponível para seleção.")
+        return
+
+    try:
+        resposta = int(input("Escolha a categoria pelo número: "))
+        categorias = categorias_denuncias["categorias"]
+        if 1 <= resposta <= len(categorias):
+            categoria = categorias[resposta - 1]
+        else:
+            print("Escolha uma opção válida")
+            return
+    except ValueError:
+        print("Entrada inválida. Por favor, insira um número.")
+        return
+
+    data = input("Informe a data do ocorrido (DD/MM/AA): ")
     local = input("Informe o local do ocorrido: ")
     descricao = input("Dê uma breve descrição do ocorrido: ")
-    protocolo = main.numero_protocolo
-    print(f"Obrigado pelas informações, seu protocolo é: {protocolo} ")
+    protocolo = str(main.numero_protocolo)
+    print(f"Obrigado pelas informações, seu protocolo é: {protocolo}")
     progresso = "Em Processamento"
 
     nova_denuncia = {
@@ -140,13 +127,15 @@ def criar_denuncia():
         "protocolo": protocolo,
         "progresso": progresso
     }
+
     adicionar_denuncia(nova_denuncia)
+
 
 def listar_denuncias():
     denuncias = json_functions.carregar_denuncias()
     if denuncias:
         print("\nLISTA DE DENÚNCIAS:")
-        for i, denuncia in enumerate(denuncias[1:], start=1):
+        for i, denuncia in enumerate(denuncias, start=1):
             print("-" * 40)
             print(f"Denúncia {i}:")
             print(f"  Categoria: {denuncia.get('categoria', 'Não informado')}")
@@ -196,24 +185,61 @@ def remover_denuncia():
     resposta = int(input("\nQual denúncia você quer remover? "))
     if 0 < resposta <= len(denuncias):
         denuncias.pop(resposta)
-        print("Denúncia removido com sucesso! ")
+        print("Denúncia removida com sucesso! ")
     else:
         print("Digite um valor válido! ")
     json_functions.salvar_denuncias(denuncias)
 
+def buscar_denuncias(protocolo_busca):
+    denuncias = json_functions.carregar_denuncias()
+    for denuncia in denuncias:
+        if denuncia.get("protocolo") == protocolo_busca:
+            print("\nDenúncia encontrada:")
+            print(f"  Categoria: {denuncia.get('categoria', 'Não informado')}")
+            print(f"  Data: {denuncia.get('data', 'Não informado')}")
+            print(f"  Local: {denuncia.get('local', 'Não informado')}")
+            print(f"  Descrição: {denuncia.get('descricao', 'Não informado')}")
+            print(f"  Protocolo: {denuncia.get('protocolo', 'Não informado')}")
+            print(f"  Progresso: {denuncia.get('progresso', 'Não informado')}")
+            break
+    print("Nenhuma denúncia encontrada com esse protocolo.")
+
+def criar_categoria():
+    categorias_denuncias = json_functions.carregar_categorias()
+    categoria_nova = input("\nDigite a nova categoria: ")
+    categorias_denuncias["categorias"].append(categoria_nova)
+    print("Categoria criada com sucesso!")
+    json_functions.salvar_categorias(categorias_denuncias)
+
 def listar_categorias():
     categorias_denuncias = json_functions.carregar_categorias()
-    if categorias_denuncias:
+    if categorias_denuncias and "categorias" in categorias_denuncias:
         print("\nLISTA DE CATEGORIAS DE DENÚNCIAS:")
-        for i, denuncia in enumerate(denuncias, start=1):
-            print("-" * 40)
-            print(categorias_denuncias)
-            print("-" * 40)
+        for i, categoria in enumerate(categorias_denuncias["categorias"], start=1):
+            print(f"[{i}].{categoria}")
     else:
-        print("Nenhuma denúncia encontrada!")
+        print("Nenhuma categoria encontrada!")
 
+def editar_categoria():
+    listar_categorias()
+    resposta = int(input("\n Escolha o número da categoria a ser editada: "))
+    categoria_modificada = input("\nDigite a nova categorias: ")
+    categorias_denuncias['categorias'][resposta - 1] = categoria_modificada
+    print("Categoria editada com sucesso!")
+    json_functions.salvar_categorias(categorias_denuncias)
 
+def remover_categoria():
+    listar_categorias()
+    categorias_denuncias = json_functions.carregar_categorias()
+    if "categorias" in categorias_denuncias:
+        categorias_lista = categorias_denuncias["categorias"]
 
-
-
-
+        resposta = int(input("\nQual categoria você quer remover? "))
+        if 1 <= resposta <= len(categorias_lista):
+            categorias_lista.pop(resposta - 1)
+            print("Categoria removida com sucesso! ")
+            json_functions.salvar_categorias(categorias_denuncias)
+        else:
+            print("Digite um valor válido! ")
+    else:
+        print("Nenhuma categoria encontrada!")

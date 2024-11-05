@@ -7,28 +7,16 @@ import menu_functions
 import crud_functions
 
 denuncias = [{
-    "categoria": "",
-    "data": "",
-    "local": "",
-    "descricao": "",
-    "protocolo": "",
-    "progresso":""
 }]
 
 usuarios_adm = [{
-    "username":"",
-    "nome": "",
-    "idade": "",
-    "email": "",
-    "telefone": "",
-    "senha": ""
 }]
 
-categorias_denuncias = [{
+categorias_denuncias = {
     "categorias": ["Roubo", "Furto", "Assédio",
                    "Agressão Física", "Fraude", "Tráfico de Drogas",
                    "Vandalismo", "Violência Doméstica", "Discriminação"]
-}]
+}
 
 denuncia_arquivo: str = "denuncias.json"
 usuario_arquivo: str = "usuarios.json"
@@ -59,7 +47,6 @@ def autenticacao_adm():
         menu_adm()
     else:
         print("\n Infelizmente você não tem acesso! ")
-
 
 def menu_inicial():
     print("                                 ")
@@ -92,7 +79,7 @@ def menu_principal():
 
 def menu_denuncia():
     while True:
-        print("="*20, "Denúncia Anônima", "="*20)
+        print("\n", "="*20, "Denúncia Anônima", "="*20)
         print("[1] Realizar Denúncia Anônima")
         print("[2] Busca por Denúncia")
         print("[3] Sair")
@@ -101,7 +88,8 @@ def menu_denuncia():
             case 1:
                 crud_functions.criar_denuncia()
             case 2:
-                print("exemplo")
+                protocolo = input("\nInforme o número do protocolo da sua denúncia: ")
+                crud_functions.buscar_denuncias(protocolo)
             case 3:
                 break
 
@@ -154,13 +142,13 @@ def menu_categorias():
         resposta = int(input("Escolha um para continuar:"))
         match resposta:
             case 1:
-                print("exemplo")
+                crud_functions.criar_categoria()
             case 2:
-                print("exemplo")
+                crud_functions.listar_categorias()
             case 3:
-                print("exemplo")
+                crud_functions.editar_categoria()
             case 4:
-                print("exemplo")
+                crud_functions.remover_categoria()
             case 5:
                 break
             case _:
