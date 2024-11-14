@@ -1,10 +1,5 @@
-import email
 import main
-import json
-import menu_functions
 import json_functions
-from json_functions import *
-
 def adicionar_usuario(novo_usuario):
     usuarios_adm = json_functions.carregar_usuarios_adm()
     usuarios_adm.append(novo_usuario)
@@ -12,7 +7,7 @@ def adicionar_usuario(novo_usuario):
 
 def cadastro_adm():
     json_functions.carregar_usuarios_adm()
-    username = input("Informe o nome de usuário do novo administrador: ")
+    username = input("\nInforme o nome de usuário do novo administrador: ")
     nome = input("Informe o nome do novo administrador: ")
     idade = input("Informe a idade do novo administrador: ")
     email = input("Informe o email do novo administrador: ")
@@ -33,7 +28,7 @@ def listar_adm():
     usuarios_adm = json_functions.carregar_usuarios_adm()
     if usuarios_adm:
         print("\nADMINISTRADORES CADASTRADOS:")
-        for i, user in enumerate(usuarios_adm[1:], start=1):
+        for i, user in enumerate(usuarios_adm, start=1):
             print("-" * 40)
             print(f"  Usuário {i}:")
             print(f"  Nome de Usuário: {user.get('username')}")
@@ -48,40 +43,40 @@ def listar_adm():
 def alterar_adm():
     usuarios_adm = json_functions.carregar_usuarios_adm()
     listar_adm()
-    json_functions.carregar_usuarios_adm()
-    resposta = int(input("\nQual administrador você quer modificar?"))
-    try:
-        if 0 < resposta <len(usuarios_adm):
-            print(f"\nQual informação você gostaria de alterar?")
-            print("[1] Username ")
-            print("[2] Nome")
-            print("[3] Idade")
-            print("[4] Email")
-            print("[5] Telefone")
-            print("[6] Senha")
+    if usuarios_adm:
+        resposta = int(input("\nQual administrador você quer modificar? "))
+        try:
+            if 0 < resposta <=len(usuarios_adm):
+                print(f"\nQual informação você gostaria de alterar? ")
+                print("[1] Username ")
+                print("[2] Nome")
+                print("[3] Idade")
+                print("[4] Email")
+                print("[5] Telefone")
+                print("[6] Senha")
 
-            opcao = int(input("\n"))
-            campos = ["username", "nome", "idade", "email", "telefone", "senha"]
+                opcao = int(input("\n"))
+                campos = ["username", "nome", "idade", "email", "telefone", "senha"]
 
-            if 1 <= opcao <= 6:
-                novo_valor = input(f"Digite o novo valor para {campos[opcao - 1]}: ")
-                usuarios_adm[resposta][campos[opcao - 1]] = novo_valor
-                json_functions.salvar_usuarios_adm(usuarios_adm)
-                print("Informação alterada com sucesso!")
+                if 1 <= opcao <= 6:
+                    novo_valor = input(f"Digite o novo valor para {campos[opcao - 1]}: ")
+                    usuarios_adm[resposta - 1][campos[opcao - 1]] = novo_valor
+                    json_functions.salvar_usuarios_adm(usuarios_adm)
+                    print("Informação alterada com sucesso!")
+                else:
+                    print("Opção inválida! ")
             else:
-                print("Opção inválida! ")
-        else:
-            print("Administrador não encontrado!")
-    except ValueError:
-        print("Entrada inválida! Por favor, insira um número.")
+                print("Administrador não encontrado!")
+        except ValueError:
+            print("Entrada inválida! Por favor, insira um número.")
 
 def remover_adm():
     listar_adm()
     usuarios_adm = json_functions.carregar_usuarios_adm()
     resposta = int(input("\nQual usuário você quer remover? "))
     if 0 < resposta <= len(usuarios_adm):
-     usuarios_adm.pop(resposta)
-     print("Usuario removido com sucesso! ")
+        usuarios_adm.pop(resposta - 1)
+        print("Usuario removido com sucesso! ")
     else:
         print("Nenhum usuario encontrado")
     json_functions.salvar_usuarios_adm(usuarios_adm)
@@ -151,58 +146,62 @@ def listar_denuncias():
 def atualizar_progresso():
     denuncias = json_functions.carregar_denuncias()
     listar_denuncias()
-    resposta = int(input("\nQual denúncia você quer alterar o progresso? "))
-    try:
-        if 0 < resposta < len(denuncias):
-                print("Escolha a nova categoria: ")
-                print("[1] Em Andamento")
-                print("[2] Caso Encerrado ")
-                opcao = int(input("\n"))
+    if denuncias:
+        resposta = int(input("\nQual denúncia você quer alterar o progresso? "))
+        try:
+            if 0 < resposta <= len(denuncias):
+                    print("Escolha a nova categoria: ")
+                    print("[1] Em Andamento")
+                    print("[2] Caso Encerrado ")
+                    opcao = int(input("\n"))
 
-                while True:
-                    match opcao:
-                        case 1:
-                            novo_progresso = "Em Andamento"
-                            break
-                        case 2:
-                            novo_progresso = "Caso Encerrado"
-                            break
-                        case _:
-                            print("Escolha um número válido! ")
+                    while True:
+                        match opcao:
+                            case 1:
+                                novo_progresso = "Em Andamento"
+                                break
+                            case 2:
+                                novo_progresso = "Caso Encerrado"
+                                break
+                            case _:
+                                print("Escolha um número válido! ")
 
-                denuncias[resposta]["progresso"] = novo_progresso
-                json_functions.salvar_denuncias(denuncias)
-                print("Progresso atualizado com sucesso!")
-        else:
-            print("Opção inválida! ")
+                    denuncias[resposta - 1]["progresso"] = novo_progresso
+                    json_functions.salvar_denuncias(denuncias)
+                    print("Progresso atualizado com sucesso!")
+            else:
+                print("Opção inválida! ")
 
-    except ValueError:
-        print("Entrada inválida! Por favor, insira um número.")
+        except ValueError:
+            print("Entrada inválida! Por favor, insira um número.")
 
 def remover_denuncia():
-    listar_denuncias()
     denuncias = json_functions.carregar_denuncias()
-    resposta = int(input("\nQual denúncia você quer remover? "))
-    if 0 < resposta <= len(denuncias):
-        denuncias.pop(resposta)
-        print("Denúncia removida com sucesso! ")
-    else:
-        print("Digite um valor válido! ")
-    json_functions.salvar_denuncias(denuncias)
+    listar_denuncias()
+    if denuncias:
+        resposta = int(input("\nQual denúncia você quer remover? "))
+        if 0 < resposta <= len(denuncias):
+            denuncias.pop(resposta-1)
+            print("Denúncia removida com sucesso! ")
+        else:
+            print("Digite um valor válido! ")
+        json_functions.salvar_denuncias(denuncias)
 
 def buscar_denuncias(protocolo_busca):
     denuncias = json_functions.carregar_denuncias()
-    for denuncia in denuncias:
-        if denuncia.get("protocolo") == protocolo_busca:
-            print("\nDenúncia encontrada:")
-            print(f"  Categoria: {denuncia.get('categoria', 'Não informado')}")
-            print(f"  Data: {denuncia.get('data', 'Não informado')}")
-            print(f"  Local: {denuncia.get('local', 'Não informado')}")
-            print(f"  Descrição: {denuncia.get('descricao', 'Não informado')}")
-            print(f"  Protocolo: {denuncia.get('protocolo', 'Não informado')}")
-            print(f"  Progresso: {denuncia.get('progresso', 'Não informado')}")
-            break
-    print("Nenhuma denúncia encontrada com esse protocolo.")
+    if denuncias:
+        for denuncia in denuncias:
+            if denuncia.get("protocolo") == protocolo_busca:
+                print("\nDenúncia encontrada:")
+                print(f"  Categoria: {denuncia.get('categoria', 'Não informado')}")
+                print(f"  Data: {denuncia.get('data', 'Não informado')}")
+                print(f"  Local: {denuncia.get('local', 'Não informado')}")
+                print(f"  Descrição: {denuncia.get('descricao', 'Não informado')}")
+                print(f"  Protocolo: {denuncia.get('protocolo', 'Não informado')}")
+                print(f"  Progresso: {denuncia.get('progresso', 'Não informado')}")
+                break
+            else:
+                print("Nenhuma denúncia encontrada com esse protocolo.")
 
 def criar_categoria():
     categorias_denuncias = json_functions.carregar_categorias()
@@ -224,7 +223,7 @@ def editar_categoria():
     categorias_denuncias = json_functions.carregar_categorias()
     listar_categorias()
     try:
-        resposta = int(input("\n Escolha o número da categoria a ser editada: "))
+        resposta = int(input("\nEscolha o número da categoria a ser editada: "))
         categorias_lista = categorias_denuncias.get("categorias", [])
 
         if 0 < resposta <= len(categorias_lista):
